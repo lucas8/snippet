@@ -9,3 +9,21 @@
 @import './components/buttons.css';
 
 @import 'tailwindcss/utilities';
+
+html,
+body {
+  background: #1f2022;
+  height: 100%;
+}
+
+.navbar {
+  background: #141419;
+}
+
+.navbar-item {
+  @apply cursor-pointer w-full inline-flex items-center p-2 mt-8 transition duration-150 ease-in-out;
+}
+
+.navbar-item:hover {
+  @apply opacity-50;
+}
