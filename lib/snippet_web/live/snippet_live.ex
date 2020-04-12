@@ -19,8 +19,13 @@ defmodule SnippetWeb.SnippetLive do
   end
 
   def handle_event("name-blur", %{"value" => value}, socket) do
-    # This returns the value of the input after it has been unfocused (blur)
-    IO.puts(value)
-    {:noreply, socket}
+    case Content.update_snippet(socket.assigns.snippet, %{name: value}) do
+      {:ok, snippet} ->
+        {:noreply, socket
+        |> assign(snippet: snippet)}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
   end
 end
