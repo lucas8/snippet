@@ -39,7 +39,7 @@ defmodule SnippetWeb.PageController do
     case Content.create_snippet(content_params) do
       {:ok, snippet} ->
         conn
-        |> redirect(to: Routes.page_path(conn, :show, snippet.slug))
+        |> redirect(to: Routes.page_path(conn, :edit, snippet.slug))
 
       {:error, reason} ->
         inspect reason

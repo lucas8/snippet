@@ -8,11 +8,19 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.btn-secondary:focus {
+  outline: none;
+}
+
 .btn-primary {
-  @apply inline-flex items-center justify-center h-10 px-3 text-base shadow-sm leading-6 bg-indigo-500 font-medium rounded-md text-white transition duration-150 ease-in-out;
+  @apply inline-flex items-center justify-center h-10 px-3 text-base shadow-sm leading-6 bg-indigo-500 font-medium rounded-md text-white transition duration-150 ease-in-out outline-none;
   outline: none;
 }
 
 .btn-primary:hover {
   @apply bg-indigo-400;
+}
+
+.btn-primary:focus {
+  outline: none;
 }

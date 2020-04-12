@@ -27,3 +27,7 @@ body {
 .navbar-item:hover {
   @apply opacity-50;
 }
+
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
