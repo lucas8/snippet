@@ -11,8 +11,8 @@ defmodule SnippetWeb.PageController do
   def edit(conn, %{"id" => slug}) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
-        # TODO: Add Flashes
         conn
+        |> put_flash(:error, "That snippet couldn't be found")
         |> redirect(to: Routes.page_path(conn, :index))
 
       snippet ->
@@ -23,8 +23,8 @@ defmodule SnippetWeb.PageController do
   def show(conn, %{"id" => slug}) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
-        # TODO: Add Flashes
         conn
+        |> put_flash(:error, "That snippet couldn't be found")
         |> redirect(to: Routes.page_path(conn, :index))
 
       snippet ->

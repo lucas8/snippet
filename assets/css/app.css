@@ -10,8 +10,6 @@
 
 @import 'tailwindcss/utilities';
 
-@import '../../deps/phoenix_live_reload/assets/css/live_view.css';
-
 html,
 body {
   background: #1f2022;

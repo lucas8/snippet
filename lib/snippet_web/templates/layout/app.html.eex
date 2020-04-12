@@ -11,12 +11,12 @@
   <body>
     <div class="flex h-full">
       <div class="navbar w-20 h-full p-4">
-        <a href="/new" class="inline-flex items-center p-2 rounded-lg bg-indigo-500 hover:bg-indigo-500 focus:outline-none active:bg-indigo-700 transition duration-150 ease-in-out">
+        <%= link to: Routes.page_path(@conn, :new), class: "inline-flex items-center p-2 rounded-lg bg-indigo-500 hover:bg-indigo-500 focus:outline-none active:bg-indigo-700 transition duration-150 ease-in-out" do %>
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
-        </a>
-        <a href="#" class="navbar-item">
+        <% end %>
+        <%= link to: Routes.page_path(@conn, :index), class: "navbar-item" do %>
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-        </a>
+        <% end %>
         <a href="#" class="navbar-item">
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
         </a>
@@ -27,7 +27,19 @@
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path></svg>
         </a>
       </div>
-      <main role="main" class="col-span-5 w-full h-full">
+      <main role="main" class="col-span-5 w-full h-full relative">
+        <%= unless is_nil(get_flash(@conn, :error)) do %>
+          <p class="absolute top-0 left-0 right-0 bg-red-500 text-center h-15 px-5 py-2 text-white font-semibold shadow-md m-auto w-full " role="alert">
+            <%= get_flash(@conn, :error) %>
+          </p>
+        <% end %>
+
+        <%= unless is_nil(get_flash(@conn, :info)) do %>
+          <p class="absolute top-0 left-0 right-0 bg-blue-500 text-center h-15 px-5 py-2 text-white font-semibold shadow-md m-auto w-full " role="alert">
+            <%= get_flash(@conn, :info) %>
+          </p>
+        <% end %>
+
         <%= render @view_module, @view_template, assigns %>
       </main>
     </div>
