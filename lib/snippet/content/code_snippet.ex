@@ -7,6 +7,7 @@ defmodule Snippet.Content.CodeSnippet do
     field :body, :string
     field :name, :string
     field :slug, :string
+    field :password, :string
 
     timestamps()
   end
