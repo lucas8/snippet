@@ -21,9 +21,6 @@ defmodule SnippetWeb.Router do
     # get "/pages/:page", PageController, :show
 
     resources("/content", PageController, except: [:delete, :update, :create])
-
-
-    live "/snippet", SnippetLive
   end
 
   # Other scopes may use custom stacks.
