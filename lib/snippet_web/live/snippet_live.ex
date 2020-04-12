@@ -18,7 +18,7 @@ defmodule SnippetWeb.SnippetLive do
     end
   end
 
-  def handle_event("field-blur", %{"value" => value}, socket) do
+  def handle_event("name-blur", %{"value" => value}, socket) do
     # This returns the value of the input after it has been unfocused (blur)
     IO.puts(value)
     {:noreply, socket}
