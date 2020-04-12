@@ -8,6 +8,18 @@ defmodule SnippetWeb.PageController do
     |> render("index.html")
   end
 
+  def edit(conn, %{"id" => slug}) do
+    case Content.get_snippet_by_slug(slug) do
+      nil ->
+        # TODO: Add Flashes
+        conn
+        |> redirect(to: Routes.page_path(conn, :index))
+
+      snippet ->
+        render(conn, "edit.html", snippet: snippet)
+    end
+  end
+
   def show(conn, %{"id" => slug}) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
