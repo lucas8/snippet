@@ -1,15 +1,15 @@
 <main role="main" class="col-span-5 w-full h-full relative">
-  <%= unless is_nil(get_flash(@conn, :error)) do %>
+  <%= unless is_nil(live_flash(@flash, :error)) do %>
     <p class="absolute top-0 left-0 right-0 bg-red-500 text-center h-15 px-5 py-2 text-white font-semibold shadow-md m-auto w-full " role="alert">
-      <%= get_flash(@conn, :error) %>
+      <%= live_flash(@flash, :error) %>
     </p>
   <% end %>
 
-  <%= unless is_nil(get_flash(@conn, :info)) do %>
+  <%= unless is_nil(live_flash(@flash, :info)) do %>
     <p class="absolute top-0 left-0 right-0 bg-blue-500 text-center h-15 px-5 py-2 text-white font-semibold shadow-md m-auto w-full " role="alert">
-      <%= get_flash(@conn, :info) %>
+      <%= live_flash(@flash, :info) %>
     </p>
   <% end %>
-
-  <%= render @view_module, @view_template, assigns %>
+  
+  <%= @inner_content %>
 </main>

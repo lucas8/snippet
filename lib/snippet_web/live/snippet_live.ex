@@ -1,5 +1,5 @@
 defmodule SnippetWeb.SnippetLive do
-  use Phoenix.LiveView
+  use Phoenix.LiveView, layout: {SnippetWeb.LayoutView, "live.html"}
 
   def mount(_params, _session, socket) do
     {:ok, socket}

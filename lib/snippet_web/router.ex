@@ -8,6 +8,7 @@ defmodule SnippetWeb.Router do
     plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_root_layout, {SnippetWeb.LayoutView, :root}
   end
 
   pipeline :api do
