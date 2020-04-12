@@ -1,15 +1,21 @@
 defmodule SnippetWeb.SnippetLive do
   use Phoenix.LiveView, layout: {SnippetWeb.LayoutView, "live.html"}
 
-  def render(assigns) do
-    ~L"""
-    <h1>LiveView!</h1>
-    <input name="value" value="<%= @value %>" phx-blur="field-blur" />
-    """
-  end
+  alias SnippetWeb.Router.Helpers, as: Routes
+  alias Snippet.Content
 
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, value: nil)}
+  def mount(%{"id" => slug}, _session, socket) do
+    # {:ok, assign(socket, value: nil, slug: slug)}
+    case Content.get_snippet_by_slug(slug) do
+      nil ->
+        {:ok, socket
+        |> put_flash(:error, "That snippet couldn't be found")
+        |> redirect(to: Routes.page_path(socket, :show, slug))
+      }
+
+      snippet ->
+        {:ok, assign(socket, snippet: snippet)}
+    end
   end
 
   def handle_event("field-blur", %{"value" => value}, socket) do

@@ -20,7 +20,8 @@ defmodule SnippetWeb.Router do
 
     # get "/pages/:page", PageController, :show
 
-    resources("/content", PageController, except: [:delete, :update, :create])
+    resources("/content", PageController, except: [:delete, :update, :create, :edit])
+    live "/content/:id/edit", SnippetLive
   end
 
   # Other scopes may use custom stacks.

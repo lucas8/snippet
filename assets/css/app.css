@@ -35,3 +35,7 @@ textarea::placeholder {
 .title-input:focus {
   background: #13151a;
 }
+
+div[data-phx-main='true'] {
+  @apply w-full;
+}

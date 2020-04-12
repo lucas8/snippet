@@ -8,20 +8,6 @@ defmodule SnippetWeb.PageController do
     |> render("index.html")
   end
 
-  def edit(conn, _) do
-    live_render(conn, SnippetWeb.SnippetLive)
-
-    # case Content.get_snippet_by_slug(slug) do
-    #   nil ->
-    #     conn
-    #     |> put_flash(:error, "That snippet couldn't be found")
-    #     |> redirect(to: Routes.page_path(conn, :index))
-
-    #   snippet ->
-    #     render(conn, "edit.html", snippet: snippet)
-    # end
-  end
-
   def show(conn, %{"id" => slug}) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
@@ -41,7 +27,7 @@ defmodule SnippetWeb.PageController do
     case Content.create_snippet(content_params) do
       {:ok, snippet} ->
         conn
-        |> redirect(to: Routes.page_path(conn, :edit, snippet.slug))
+        |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetLive, snippet.slug))
 
       {:error, reason} ->
         inspect reason
