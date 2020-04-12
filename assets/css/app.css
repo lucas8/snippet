@@ -36,6 +36,6 @@ textarea::placeholder {
   background: #13151a;
 }
 
-div[data-phx-main='true'] {
+div[data-phx-view] {
   @apply w-full;
 }

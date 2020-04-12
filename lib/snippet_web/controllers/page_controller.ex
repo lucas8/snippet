@@ -27,13 +27,13 @@ defmodule SnippetWeb.PageController do
     case Content.create_snippet(content_params) do
       {:ok, snippet} ->
         conn
-        |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetLive, snippet.slug))
+        |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetEditLive, snippet.slug))
 
       {:error, reason} ->
         inspect reason
         conn
         |> put_flash(:error, "An error has occured while creating a snippet.")
-        |> redirect(to: Routes.page_path(conn, :show, 1))
+        |> redirect(to: Routes.page_path(conn, :index))
     end
   end
 
