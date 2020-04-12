@@ -10,6 +10,8 @@
 
 @import 'tailwindcss/utilities';
 
+@import '../../deps/phoenix_live_reload/assets/css/live_view.css';
+
 html,
 body {
   background: #1f2022;
@@ -30,4 +32,8 @@ body {
 
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.75);
+}
+
+.title-input:focus {
+  background: #13151a;
 }

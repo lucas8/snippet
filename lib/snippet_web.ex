@@ -23,6 +23,7 @@ defmodule SnippetWeb do
 
       import Plug.Conn
       import SnippetWeb.Gettext
+      import Phoenix.LiveView.Controller
       alias SnippetWeb.Router.Helpers, as: Routes
     end
   end
@@ -41,6 +42,9 @@ defmodule SnippetWeb do
 
       import SnippetWeb.ErrorHelpers
       import SnippetWeb.Gettext
+
+      import Phoenix.LiveView.Helpers
+
       alias SnippetWeb.Router.Helpers, as: Routes
     end
   end
@@ -50,6 +54,7 @@ defmodule SnippetWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 

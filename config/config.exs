@@ -16,7 +16,7 @@ config :snippet, SnippetWeb.Endpoint,
   secret_key_base: "tH0Ii1aFgeFXyN5tfnF4Ac7rsLgBDNS8pXkDxyxZaeGokEIRigtRBPgNx95BytVT",
   render_errors: [view: SnippetWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Snippet.PubSub, adapter: Phoenix.PubSub.PG2],
-  live_view: [signing_salt: "5DdVSkRF"]
+  live_view: [signing_salt: "1gTVA9Wtl647/F87AfbvkwBt4yZVwxHE"]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -25,6 +25,10 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+# Configure liveview engine
+# config :phoenix,
+#   template_engines: [leex: Phoenix.LiveView.Engine]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

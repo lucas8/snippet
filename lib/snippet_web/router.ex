@@ -5,6 +5,7 @@ defmodule SnippetWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -16,7 +17,9 @@ defmodule SnippetWeb.Router do
   scope "/", SnippetWeb do
     pipe_through :browser
 
-    resources("/", PageController)
+    resources("/content", PageController)
+
+    live "/snippet", SnippetLive
   end
 
   # Other scopes may use custom stacks.
