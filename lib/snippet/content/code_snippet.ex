@@ -15,7 +15,9 @@ defmodule Snippet.Content.CodeSnippet do
   def changeset(code_snippet, attrs) do
     code_snippet
     |> cast(attrs, [:name, :author, :slug, :body])
-    |> validate_required([:name, :author, :slug, :body])
+    |> validate_required([:name, :author, :slug])
     |> unique_constraint(:slug)
+    |> validate_length(:name, max: 30)
+    |> validate_length(:author, max: 30)
   end
 end
