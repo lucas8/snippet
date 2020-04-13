@@ -26,3 +26,16 @@ liveSocket.connect()
 //
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
+
+window.copyLink = () => {
+  var dummy = document.createElement('input')
+  var text = window.location.href
+
+  document.body.appendChild(dummy)
+  dummy.value = text
+  dummy.select()
+  document.execCommand('copy')
+  document.body.removeChild(dummy)
+
+  document.querySelector('#copy-link-text').textContent = 'Copied!'
+}

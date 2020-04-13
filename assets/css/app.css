@@ -37,5 +37,5 @@ textarea::placeholder {
 }
 
 div[data-phx-view] {
-  @apply w-full;
+  @apply w-full h-full;
 }

@@ -19,7 +19,6 @@ defmodule SnippetWeb.Router do
     pipe_through :browser
 
     live "/", SnippetIndexLive
-    get "/new", PageController, :new
     live "/:id/edit", SnippetEditLive
     live "/:id", SnippetShowLive
   end
