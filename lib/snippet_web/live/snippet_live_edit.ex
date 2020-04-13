@@ -4,6 +4,9 @@ defmodule SnippetWeb.SnippetEditLive do
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
 
+  # TODO: Add websocket event for deleting snippets
+  # TODO: Debounce update to db after typing is finished
+
   def mount(_params, _session, socket) do
     {:ok, assign(socket, show_modal: false)}
   end
@@ -17,9 +20,21 @@ defmodule SnippetWeb.SnippetEditLive do
       }
 
       snippet ->
+        # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
         {:noreply, assign(socket, snippet: snippet)}
     end
+  end
+
+  # On keyup for the main textarea
+  def handle_event("update_snippet", %{"value" => updated_snippet}, socket) do
+    # Broadcast to all but the sending socket aka self()
+    SnippetWeb.Endpoint.broadcast!(
+      "snippet:#{socket.assigns.snippet.id}",
+      "updated_snippet",
+      %{socket.assigns.snippet | body: updated_snippet}
+    )
+    {:noreply, socket}
   end
 
   def handle_event("name-blur", %{"value" => value}, socket) do
@@ -37,6 +52,10 @@ defmodule SnippetWeb.SnippetEditLive do
     {:noreply, assign(socket, show_modal: true)}
   end
 
+  def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
+    {:noreply, socket |> assign(snippet: new_snippet)}
+  end
+
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-delete"}}, socket) do
     {:noreply, assign(socket, show_modal: false)}
   end
@@ -47,6 +66,4 @@ defmodule SnippetWeb.SnippetEditLive do
       |> put_flash(:info, "Successfully deleted")
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
-
-  # TOOD: Add delete
 end
