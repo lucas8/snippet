@@ -32,7 +32,7 @@
         </a>
       </div>
       <div class="ml-3 inline-flex rounded-md shadow lm-2">
-        <a href="#" class="btn-primary">
+        <button type="button" class="btn-primary" phx-click="share-button-click">
           <svg class="mr-2 opacity-50 fill-current h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path></svg>
           Publish
         </a>
@@ -42,3 +42,7 @@
 
   <textarea placeholder="Type something..." class="resize-none text-white p-2 mt-3 border rounded focus:outline-none w-full" style="background: #13151A; border: 1px solid #353638; height: 90%"></textarea>
 </div>
+
+<%= if @show_modal do %>
+  <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "secure-snippet", title: "Secure your snippet", body: "Add a password to #{@snippet.name}.", primary_button: "Submit", primary_button_action: "submit-password", secondary_button: "Cancel", secondary_button_action: "cancel-password")%>
+<% end %>

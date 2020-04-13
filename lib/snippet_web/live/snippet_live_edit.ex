@@ -13,7 +13,7 @@ defmodule SnippetWeb.SnippetEditLive do
       }
 
       snippet ->
-        {:ok, assign(socket, snippet: snippet)}
+        {:ok, assign(socket, snippet: snippet, show_modal: false)}
     end
   end
 
@@ -26,6 +26,14 @@ defmodule SnippetWeb.SnippetEditLive do
       {:error, _} ->
         {:noreply, socket}
     end
+  end
+
+  def handle_event("share-button-click", _params, socket) do
+    {:noreply, assign(socket, show_modal: true)}
+  end
+
+  def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-password"}}, socket) do
+    {:noreply, assign(socket, show_modal: false)}
   end
 
   # TOOD: Add delete
