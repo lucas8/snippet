@@ -4,16 +4,21 @@ defmodule SnippetWeb.SnippetEditLive do
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
 
-  def mount(%{"id" => slug}, _session, socket) do
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, show_modal: false)}
+  end
+
+  def handle_params(%{"id" => slug}, _uri, socket) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
-        {:ok, socket
+        {:noreply, socket
         |> put_flash(:error, "That snippet couldn't be found")
         |> redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))
       }
 
       snippet ->
-        {:ok, assign(socket, snippet: snippet, show_modal: false)}
+        SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
+        {:noreply, assign(socket, snippet: snippet)}
     end
   end
 
@@ -40,8 +45,7 @@ defmodule SnippetWeb.SnippetEditLive do
     {:ok, _snippet} = Content.delete_snippet(socket.assigns.snippet)
     {:noreply, socket
       |> put_flash(:info, "Successfully deleted")
-      |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))
-    }
+      |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
 
   # TOOD: Add delete

@@ -37,9 +37,6 @@ defmodule SnippetWeb.LiveComponent.ModalLive do
 
   def handle_event("secondary-button-click", _params,%{assigns: %{secondary_button_action: secondary_button_action}} = socket) do
     send(self(),{__MODULE__, :button_clicked, %{action: secondary_button_action}})
-
-    IO.puts("SENT ACTION")
-
     {:noreply, socket}
   end
 end
