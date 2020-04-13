@@ -3,23 +3,6 @@ defmodule SnippetWeb.PageController do
 
   alias Snippet.Content
 
-  def index(conn, _params) do
-    conn
-    |> render("index.html")
-  end
-
-  def show(conn, %{"id" => slug}) do
-    case Content.get_snippet_by_slug(slug) do
-      nil ->
-        conn
-        |> put_flash(:error, "That snippet couldn't be found")
-        |> redirect(to: Routes.page_path(conn, :index))
-
-      snippet ->
-        render(conn, "show.html", snippet: snippet)
-    end
-  end
-
   def new(conn, _params) do
     slug = create_slug_of_length()
     content_params = %{name: "New Code Snippet", author: "Anonymous", slug: slug}
@@ -33,7 +16,7 @@ defmodule SnippetWeb.PageController do
         inspect reason
         conn
         |> put_flash(:error, "An error has occured while creating a snippet.")
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetIndexLive))
     end
   end
 

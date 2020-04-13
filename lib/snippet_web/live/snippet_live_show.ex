@@ -9,7 +9,7 @@ defmodule SnippetWeb.SnippetShowLive do
       nil ->
         {:ok, socket
         |> put_flash(:error, "That snippet couldn't be found")
-        |> redirect(to: Routes.page_path(socket, :index))
+        |> redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))
       }
 
       snippet ->

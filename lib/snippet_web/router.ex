@@ -18,12 +18,10 @@ defmodule SnippetWeb.Router do
   scope "/", SnippetWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", SnippetIndexLive
     get "/new", PageController, :new
     live "/:id/edit", SnippetEditLive
     live "/:id", SnippetShowLive
-
-    # resources("/content", PageController, except: [:delete, :update, :create, :edit])
   end
 
   # Other scopes may use custom stacks.

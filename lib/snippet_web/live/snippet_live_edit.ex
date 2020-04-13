@@ -9,7 +9,7 @@ defmodule SnippetWeb.SnippetEditLive do
       nil ->
         {:ok, socket
         |> put_flash(:error, "That snippet couldn't be found")
-        |> redirect(to: Routes.page_path(socket, :index))
+        |> redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))
       }
 
       snippet ->
@@ -28,12 +28,20 @@ defmodule SnippetWeb.SnippetEditLive do
     end
   end
 
-  def handle_event("share-button-click", _params, socket) do
+  def handle_event("delete-button-click", _params, socket) do
     {:noreply, assign(socket, show_modal: true)}
   end
 
-  def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-password"}}, socket) do
+  def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-delete"}}, socket) do
     {:noreply, assign(socket, show_modal: false)}
+  end
+
+  def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "delete-snippet"}}, socket) do
+    {:ok, _snippet} = Content.delete_snippet(socket.assigns.snippet)
+    {:noreply, socket
+      |> put_flash(:info, "Successfully deleted")
+      |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))
+    }
   end
 
   # TOOD: Add delete

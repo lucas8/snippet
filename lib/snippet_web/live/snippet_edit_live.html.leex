@@ -26,13 +26,13 @@
         <% end %>
       </div>
       <div class="ml-3 inline-flex rounded-md shadow">
-        <a href="#" class="btn-secondary bg-red-500 hover:bg-red-400">
+        <button class="btn-secondary hover:bg-red-500" phx-click="delete-button-click">
           <svg class="mr-2 opacity-50 fill-current h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
           Delete
-        </a>
+        </button>
       </div>
       <div class="ml-3 inline-flex rounded-md shadow lm-2">
-        <button type="button" class="btn-primary" phx-click="share-button-click">
+        <button type="button" class="btn-primary">
           <svg class="mr-2 opacity-50 fill-current h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path></svg>
           Publish
         </a>
@@ -44,5 +44,5 @@
 </div>
 
 <%= if @show_modal do %>
-  <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "secure-snippet", title: "Secure your snippet", body: "Add a password to #{@snippet.name}.", primary_button: "Submit", primary_button_action: "submit-password", secondary_button: "Cancel", secondary_button_action: "cancel-password")%>
+  <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "delete-snippet", title: "Are you sure you want to delete?", body: "This action cannot be undone. Deleting #{~s(")}#{@snippet.name}#{~s(")} is permanent and irreversible.", primary_button: "Delete", primary_button_action: "delete-snippet", secondary_button: "Cancel", secondary_button_action: "cancel-delete")%>
 <% end %>
