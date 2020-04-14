@@ -40,9 +40,26 @@
     </div>
   </div>
 
-  <textarea id="main-textarea" phx-window-keyup="update_snippet" phx-target="#main-textarea" placeholder="Type something..." class="resize-none text-white p-2 mt-3 border rounded focus:outline-none w-full" style="background: #13151A; border: 1px solid #353638; height: 90%"><%= @snippet.body %></textarea>
+  <%# <textarea id="main-textarea" phx-window-keyup="update_snippet" phx-target="#main-textarea" placeholder="Type something..."></textarea> %>
+  <div id="textarea" name="textarea" placeholder="Type your code here!" class="w-full" style="height: 90%"></div>
 </div>
 
 <%= if @show_modal do %>
   <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "delete-snippet", title: "Are you sure you want to delete?", body: "This action cannot be undone. Deleting #{~s(")}#{@snippet.name}#{~s(")} is permanent and irreversible.", primary_button: "Delete", primary_button_action: "delete-snippet", secondary_button: "Cancel", secondary_button_action: "cancel-delete")%>
 <% end %>
+
+<script>
+  let body = '<%= @snippet.body %>'
+
+  // TODO: Refactor to not use setTimeout, will fail depending
+  // on diffrent browser speeds in prod
+  setTimeout(() => {
+    let editor = CodeMirror(document.getElementById('textarea'), {
+      lineNumbers: true,
+      mode: 'javascript',
+      theme: 'duotone-dark',
+      autoFocus: true,
+      foldGutter: true,
+    }).setValue(body.replace(/&quot;/g, '"'))
+  }, 500)
+</script>

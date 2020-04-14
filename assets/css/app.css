@@ -6,6 +6,8 @@
 
 /* purgecss end ignore */
 
+@import './duotone.css';
+
 @import './components/buttons.css';
 
 @import 'tailwindcss/utilities';

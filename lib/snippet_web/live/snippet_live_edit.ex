@@ -7,7 +7,6 @@ defmodule SnippetWeb.SnippetEditLive do
   # TODO: Add websocket event for deleting snippets
   # TODO: Debounce update to db after typing is finished
 
-  @spec mount(any, any, Phoenix.LiveView.Socket.t()) :: {:ok, any}
   def mount(_params, _session, socket) do
     {:ok, assign(socket, show_modal: false)}
   end
