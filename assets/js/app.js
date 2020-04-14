@@ -17,8 +17,32 @@ let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content')
 
+//body.replace(/&quot;/g, '"')
+let Hooks = {}
+Hooks.CodeMirrorTextArea = {
+  updated() {
+    console.log('Editor has been updated')
+    this.initEditor()
+  },
+  mounted() {
+    console.log('Editor has been mounted')
+    this.initEditor()
+  },
+  initEditor() {
+    let editor = CodeMirror(document.getElementById('textarea'), {
+      lineNumbers: true,
+      mode: 'javascript',
+      theme: 'duotone-dark',
+      autoFocus: true,
+      foldGutter: true,
+      value: this.el.dataset.value,
+    })
+  },
+}
+
 let liveSocket = new LiveSocket('/live', Socket, {
   params: {_csrf_token: csrfToken},
+  hooks: Hooks,
 })
 liveSocket.connect()
 

@@ -40,8 +40,8 @@
     </div>
   </div>
 
-  <%# <textarea id="main-textarea" phx-window-keyup="update_snippet" phx-target="#main-textarea" placeholder="Type something..."></textarea> %>
-  <div id="textarea" name="textarea" placeholder="Type your code here!" class="w-full" style="height: 90%"></div>
+  <%# <textarea id="main-textarea" phx-hook="CodeMirrorTextArea" placeholder="Type something..."></textarea> %>
+  <div id="textarea" data-value="<%= @snippet.body %>" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%" phx-hook="CodeMirrorTextArea"></div>
 </div>
 
 <%= if @show_modal do %>
@@ -49,17 +49,16 @@
 <% end %>
 
 <script>
-  let body = '<%= @snippet.body %>'
 
-  // TODO: Refactor to not use setTimeout, will fail depending
-  // on diffrent browser speeds in prod
-  setTimeout(() => {
-    let editor = CodeMirror(document.getElementById('textarea'), {
+  // phx-window-keyup="update_snippet" phx-target="#main-textarea"
+
+  /* let editor = CodeMirror(document.getElementById('textarea'), {
       lineNumbers: true,
       mode: 'javascript',
       theme: 'duotone-dark',
       autoFocus: true,
       foldGutter: true,
-    }).setValue(body.replace(/&quot;/g, '"'))
-  }, 500)
+      value: body.replace(/&quot;/g, '"'),
+      resize: false
+  }) */
 </script>
