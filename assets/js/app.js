@@ -22,20 +22,23 @@ let Hooks = {}
 Hooks.CodeMirrorTextArea = {
   updated() {
     console.log('Editor has been updated')
-    this.initEditor()
   },
   mounted() {
     console.log('Editor has been mounted')
     this.initEditor()
   },
   initEditor() {
-    let editor = CodeMirror(document.getElementById('textarea'), {
+    this.cm = CodeMirror(document.getElementById('textarea'), {
       lineNumbers: true,
       mode: 'javascript',
       theme: 'duotone-dark',
       autoFocus: true,
       foldGutter: true,
+      autofocus: true,
       value: this.el.dataset.value,
+    }).on('change', (editor) => {
+      console.log(editor.getValue())
+      this.pushEvent('change_value', editor.getValue())
     })
   },
 }

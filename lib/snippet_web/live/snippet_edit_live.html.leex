@@ -39,26 +39,10 @@
       </div>
     </div>
   </div>
-
-  <%# <textarea id="main-textarea" phx-hook="CodeMirrorTextArea" placeholder="Type something..."></textarea> %>
-  <div id="textarea" data-value="<%= @snippet.body %>" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%" phx-hook="CodeMirrorTextArea"></div>
+  
+  <div id="textarea" autofocus phx-update="ignore" data-value="<%= @snippet.body %>" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%" phx-hook="CodeMirrorTextArea"></div>
 </div>
 
 <%= if @show_modal do %>
   <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "delete-snippet", title: "Are you sure you want to delete?", body: "This action cannot be undone. Deleting #{~s(")}#{@snippet.name}#{~s(")} is permanent and irreversible.", primary_button: "Delete", primary_button_action: "delete-snippet", secondary_button: "Cancel", secondary_button_action: "cancel-delete")%>
 <% end %>
-
-<script>
-
-  // phx-window-keyup="update_snippet" phx-target="#main-textarea"
-
-  /* let editor = CodeMirror(document.getElementById('textarea'), {
-      lineNumbers: true,
-      mode: 'javascript',
-      theme: 'duotone-dark',
-      autoFocus: true,
-      foldGutter: true,
-      value: body.replace(/&quot;/g, '"'),
-      resize: false
-  }) */
-</script>

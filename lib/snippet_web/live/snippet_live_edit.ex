@@ -26,6 +26,11 @@ defmodule SnippetWeb.SnippetEditLive do
     end
   end
 
+  def handle_event("change_value", value, socket) do
+    IO.puts(value)
+    {:noreply, socket}
+  end
+
   # On keyup for the main textarea
   def handle_event("update_snippet", %{"value" => updated_snippet}, socket) do
     # Broadcast to all but the sending socket aka self()
@@ -56,10 +61,6 @@ defmodule SnippetWeb.SnippetEditLive do
     {:noreply, socket
       |> put_flash(:info, "Snippet has been deleted")
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
-  end
-
-  def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
-    {:noreply, socket |> assign(snippet: new_snippet)}
   end
 
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-delete"}}, socket) do
