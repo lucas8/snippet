@@ -41,7 +41,7 @@
   </div>
 
   <div id="textarea" autofocus phx-update="ignore" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%"></div>
-  <div hidden id="snippet-transport" phx-hook="SnippetTransport" data-initial="<%= @initial_value %>"><%= @snippet.body %></div>
+  <div hidden id="snippet-transport" phx-hook="SnippetTransport"><%= @snippet.body %></div>
 </div>
 
 <%= if @show_modal do %>

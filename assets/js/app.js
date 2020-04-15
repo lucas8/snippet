@@ -29,7 +29,7 @@ Hooks.SnippetTransport = {
       autoFocus: true,
       foldGutter: true,
       autofocus: true,
-      initial: this.el.dataset.initial,
+      initial: this.el.innerText,
     })
 
     this.cm.on('change', (editor, {origin}) => {
@@ -39,10 +39,17 @@ Hooks.SnippetTransport = {
         this.pushEvent('change_value', editor.getValue())
       }
     })
+
+    // TODO: This also executes when the cursor is set using setCursor
+    // TODO: This creates an infinite loop because the the server is setting the
+    // data-cursors field which sets the cursor again
+    // this.cm.doc.on('cursorActivity', (doc) => {
+    //   console.log(doc.getCursor())
+    //   this.pushEvent('cursor_move', doc.getCursor())
+    // })
   },
   updated() {
     console.log('Transport Updated')
-    this.cm.refresh()
     let prevCursor = this.cm.getCursor()
     this.cm.doc.setValue(this.el.innerText)
     this.cm.setCursor(prevCursor)

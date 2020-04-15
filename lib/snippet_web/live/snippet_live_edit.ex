@@ -22,7 +22,7 @@ defmodule SnippetWeb.SnippetEditLive do
       snippet ->
         # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
-        {:noreply, assign(socket, snippet: snippet, initial_value: snippet.body)}
+        {:noreply, assign(socket, snippet: snippet)}
     end
   end
 
@@ -48,6 +48,11 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def handle_event("delete-button-click", _params, socket) do
     {:noreply, assign(socket, show_modal: true)}
+  end
+
+  def handle_event("create-snippet", _params, socket) do
+    {:noreply, socket
+      |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
 
   def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
