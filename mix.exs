@@ -20,7 +20,7 @@ defmodule Snippet.MixProject do
   def application do
     [
       mod: {Snippet.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ueberauth]
     ]
   end
 
@@ -43,7 +43,8 @@ defmodule Snippet.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix_live_view, "~> 0.11.1"}
+      {:phoenix_live_view, "~> 0.11.1"},
+      {:ueberauth, "~> 0.6"}
     ]
   end
 
