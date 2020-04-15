@@ -11,4 +11,6 @@ defmodule Snippet.Accounts do
         {:ok, user}
     end
   end
+
+  def get_user!(id), do: Repo.get!(User, id)
 end

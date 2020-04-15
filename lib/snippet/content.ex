@@ -2,8 +2,11 @@ defmodule Snippet.Content do
   alias Snippet.Repo
   alias Snippet.Content.CodeSnippet
 
-  def create_snippet(params) do
-    CodeSnippet.changeset(%CodeSnippet{}, params) |> Repo.insert()
+  def create_snippet(user, params \\ %{}) do
+    user
+    |> Ecto.build_assoc(:code_snippets)
+    |> CodeSnippet.changeset(params)
+    |> Repo.insert()
   end
 
   def update_snippet(%CodeSnippet{} = snippet, attrs) do

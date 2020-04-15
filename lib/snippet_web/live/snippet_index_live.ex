@@ -3,6 +3,7 @@ defmodule SnippetWeb.SnippetIndexLive do
 
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
+  alias Snippet.Accounts
 
   def render(assigns) do
     ~L"""
@@ -29,15 +30,17 @@ defmodule SnippetWeb.SnippetIndexLive do
     """
   end
 
-  def mount(_params, _session, socket) do
-    {:ok, socket}
+  def mount(_params, %{"user_id" => user_id}, socket) do
+    IO.puts(user_id)
+    {:ok, socket |> assign(user_id: user_id)}
   end
 
   def handle_event("create-snippet", _params, socket) do
     slug = create_slug_of_length()
     content_params = %{name: "New Code Snippet", author: "Anonymous", slug: slug}
+    user = Accounts.get_user!(socket.assigns.user_id)
 
-    case Content.create_snippet(content_params) do
+    case Content.create_snippet(user, content_params) do
       {:ok, snippet} ->
         {:noreply, socket
         |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetEditLive, snippet.slug))}
