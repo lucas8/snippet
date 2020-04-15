@@ -17,12 +17,25 @@ let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content')
 
-//body.replace(/&quot;/g, '"')
+let cm = CodeMirror(document.getElementById('textarea'), {
+  lineNumbers: true,
+  mode: 'javascript',
+  theme: 'duotone-dark',
+  autoFocus: true,
+  foldGutter: true,
+  autofocus: true,
+})
+
+// TODO: Debounce
+// TODO: Problems with cursor lagging behind
+
 let Hooks = {}
 Hooks.SnippetTransport = {
   updated() {
-    console.log(this.el.innerText)
-    document.snippet = 'hello world'
+    console.log('UPDATE EVENT')
+    let prevCursor = cm.getCursor()
+    cm.doc.setValue(this.el.innerText)
+    cm.setCursor(prevCursor)
   },
 }
 Hooks.CodeMirrorTextArea = {
@@ -34,16 +47,13 @@ Hooks.CodeMirrorTextArea = {
     this.initEditor()
   },
   initEditor() {
-    this.cm = CodeMirror(document.getElementById('textarea'), {
-      lineNumbers: true,
-      mode: 'javascript',
-      theme: 'duotone-dark',
-      autoFocus: true,
-      foldGutter: true,
-      autofocus: true,
-      value: this.el.dataset.initial,
-    }).on('change', (editor) => {
-      this.pushEvent('change_value', editor.getValue())
+    cm.doc.setValue(this.el.dataset.initial)
+    cm.on('change', (editor, {origin}) => {
+      // Make sure the input value is coming from the user input
+      if (origin !== 'setValue') {
+        console.log('CHANGE EVENT')
+        this.pushEvent('change_value', editor.getValue())
+      }
     })
   },
 }
