@@ -38,6 +38,12 @@ defmodule SnippetWeb.SnippetEditLive do
   def handle_event("name-blur", %{"value" => value}, socket) do
     case Content.update_snippet(socket.assigns.snippet, %{name: value}) do
       {:ok, snippet} ->
+        # Send out event
+        SnippetWeb.Endpoint.broadcast!(
+          "snippet:#{snippet.id}",
+          "update_name",
+          %{socket.assigns.snippet | name: snippet.name}
+        )
         {:noreply, socket
         |> assign(snippet: snippet)}
 
@@ -53,6 +59,10 @@ defmodule SnippetWeb.SnippetEditLive do
   def handle_event("create-snippet", _params, socket) do
     {:noreply, socket
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
+  end
+
+  def handle_info(%{event: "update_name", payload: new_snippet}, socket) do
+    {:noreply, socket |> assign(snippet: new_snippet)}
   end
 
   def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
