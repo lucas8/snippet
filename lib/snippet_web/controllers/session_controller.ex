@@ -29,4 +29,10 @@ defmodule SnippetWeb.SessionController do
         |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetIndexLive))
     end
   end
+
+  def delete(conn, _params) do
+    conn
+    |> Accounts.sign_out()
+    |> redirect(to: Routes.live_path(conn, SnippetWeb.SnippetIndexLive))
+  end
 end
