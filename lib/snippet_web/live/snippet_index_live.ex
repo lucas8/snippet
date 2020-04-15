@@ -31,16 +31,35 @@ defmodule SnippetWeb.SnippetIndexLive do
   end
 
   def mount(_params, %{"user_id" => user_id}, socket) do
-    IO.puts(user_id)
-    {:ok, socket |> assign(user_id: user_id)}
+    user = Accounts.get_user!(user_id)
+    {:ok, socket |> assign(user: user, signed_in?: true)}
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok, socket |> assign(user: nil, signed_in?: false)}
+  end
+
+  def handle_event("create-snippet", _params, %{assigns: %{user: user, signed_in?: true}} = socket) do
+    slug = create_slug_of_length()
+    content_params = %{name: "New Code Snippet", author: user.username, slug: slug}
+
+    case Content.create_snippet(user, content_params) do
+      {:ok, snippet} ->
+        {:noreply, socket
+        |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetEditLive, snippet.slug))}
+
+      {:error, _} ->
+        {:noreply, socket
+        |> put_flash(:error, "An error has occured while creating a snippet.")
+        |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
+    end
   end
 
   def handle_event("create-snippet", _params, socket) do
     slug = create_slug_of_length()
     content_params = %{name: "New Code Snippet", author: "Anonymous", slug: slug}
-    user = Accounts.get_user!(socket.assigns.user_id)
 
-    case Content.create_snippet(user, content_params) do
+    case Content.create_snippet_no_user(content_params) do
       {:ok, snippet} ->
         {:noreply, socket
         |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetEditLive, snippet.slug))}

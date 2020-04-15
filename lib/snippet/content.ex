@@ -9,6 +9,10 @@ defmodule Snippet.Content do
     |> Repo.insert()
   end
 
+  def create_snippet_no_user(params \\ %{}) do
+    CodeSnippet.changeset(%CodeSnippet{}, params) |> Repo.insert()
+  end
+
   def update_snippet(%CodeSnippet{} = snippet, attrs) do
     snippet
     |> CodeSnippet.changeset(attrs)

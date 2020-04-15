@@ -3,12 +3,18 @@ defmodule SnippetWeb.SnippetEditLive do
 
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
+  alias Snippet.Accounts
 
   # TODO: Add websocket event for deleting snippets
   # TODO: Debounce update to db after typing is finished
 
+  def mount(_params, %{"user_id" => user_id}, socket) do
+    user = Accounts.get_user!(user_id)
+    {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false)}
+  end
+
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, show_modal: false)}
+    {:ok, socket |> assign(user: nil, signed_in?: false, show_modal: false)}
   end
 
   def handle_params(%{"id" => slug}, _uri, socket) do
