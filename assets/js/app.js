@@ -17,44 +17,35 @@ let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content')
 
-let cm = CodeMirror(document.getElementById('textarea'), {
-  lineNumbers: true,
-  mode: 'javascript',
-  theme: 'duotone-dark',
-  autoFocus: true,
-  foldGutter: true,
-  autofocus: true,
-})
-
 // TODO: Debounce
-// TODO: Problems with cursor lagging behind
 
 let Hooks = {}
 Hooks.SnippetTransport = {
-  updated() {
-    console.log('UPDATE EVENT')
-    let prevCursor = cm.getCursor()
-    cm.doc.setValue(this.el.innerText)
-    cm.setCursor(prevCursor)
-  },
-}
-Hooks.CodeMirrorTextArea = {
-  updated() {
-    console.log('Editor has been updated')
-  },
   mounted() {
-    console.log('Editor has been mounted')
-    this.initEditor()
-  },
-  initEditor() {
-    cm.doc.setValue(this.el.dataset.initial)
-    cm.on('change', (editor, {origin}) => {
+    this.cm = CodeMirror(document.getElementById('textarea'), {
+      lineNumbers: true,
+      mode: 'javascript',
+      theme: 'duotone-dark',
+      autoFocus: true,
+      foldGutter: true,
+      autofocus: true,
+      initial: this.el.dataset.initial,
+    })
+
+    this.cm.on('change', (editor, {origin}) => {
       // Make sure the input value is coming from the user input
       if (origin !== 'setValue') {
         console.log('CHANGE EVENT')
         this.pushEvent('change_value', editor.getValue())
       }
     })
+  },
+  updated() {
+    console.log('Transport Updated')
+    this.cm.refresh()
+    let prevCursor = this.cm.getCursor()
+    this.cm.doc.setValue(this.el.innerText)
+    this.cm.setCursor(prevCursor)
   },
 }
 
