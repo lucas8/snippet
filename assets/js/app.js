@@ -19,6 +19,12 @@ let csrfToken = document
 
 //body.replace(/&quot;/g, '"')
 let Hooks = {}
+Hooks.SnippetTransport = {
+  updated() {
+    console.log(this.el.innerText)
+    document.snippet = 'hello world'
+  },
+}
 Hooks.CodeMirrorTextArea = {
   updated() {
     console.log('Editor has been updated')
@@ -35,9 +41,8 @@ Hooks.CodeMirrorTextArea = {
       autoFocus: true,
       foldGutter: true,
       autofocus: true,
-      value: this.el.dataset.value,
+      value: this.el.dataset.initial,
     }).on('change', (editor) => {
-      console.log(editor.getValue())
       this.pushEvent('change_value', editor.getValue())
     })
   },

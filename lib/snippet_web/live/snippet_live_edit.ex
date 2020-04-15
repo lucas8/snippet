@@ -22,22 +22,15 @@ defmodule SnippetWeb.SnippetEditLive do
       snippet ->
         # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
-        {:noreply, assign(socket, snippet: snippet)}
+        {:noreply, assign(socket, snippet: snippet, initial_value: snippet.body)}
     end
   end
 
   def handle_event("change_value", value, socket) do
-    IO.puts(value)
-    {:noreply, socket}
-  end
-
-  # On keyup for the main textarea
-  def handle_event("update_snippet", %{"value" => updated_snippet}, socket) do
-    # Broadcast to all but the sending socket aka self()
     SnippetWeb.Endpoint.broadcast!(
       "snippet:#{socket.assigns.snippet.id}",
       "updated_snippet",
-      %{socket.assigns.snippet | body: updated_snippet}
+      %{socket.assigns.snippet | body: value}
     )
     {:noreply, socket}
   end
@@ -55,6 +48,10 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def handle_event("delete-button-click", _params, socket) do
     {:noreply, assign(socket, show_modal: true)}
+  end
+
+  def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
+    {:noreply, socket |> assign(snippet: new_snippet)}
   end
 
   def handle_info(%{event: "delete_snippet"}, socket) do

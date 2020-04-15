@@ -39,8 +39,9 @@
       </div>
     </div>
   </div>
-  
-  <div id="textarea" autofocus phx-update="ignore" data-value="<%= @snippet.body %>" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%" phx-hook="CodeMirrorTextArea"></div>
+
+  <div id="textarea" autofocus phx-update="ignore" data-initial="<%= @initial_value %>" name="textarea" placeholder="Type your code here!" class="w-full z-10" style="height: 90%" phx-hook="CodeMirrorTextArea"></div>
+  <div hidden id="snippet-transport" phx-hook="SnippetTransport"><%= @snippet.body %></div>
 </div>
 
 <%= if @show_modal do %>
