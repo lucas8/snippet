@@ -23,8 +23,9 @@ defmodule SnippetWeb.Router do
     live "/:id", SnippetShowLive
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", SnippetWeb do
-  #   pipe_through :api
-  # end
+  scope "/auth", SnippetWeb do
+    pipe_through :browser
+
+    get "/:provider", SessionController, :request
+  end
 end
