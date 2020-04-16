@@ -4,6 +4,7 @@ defmodule SnippetWeb.SnippetEditLive do
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
   alias Snippet.Accounts
+  alias SnippetWeb.Presence
 
   # TODO: Add websocket event for deleting snippets
   # TODO: Debounce update to db after typing is finished
@@ -17,7 +18,7 @@ defmodule SnippetWeb.SnippetEditLive do
     {:ok, socket |> assign(user: nil, signed_in?: false, show_modal: false, cursors: [])}
   end
 
-  def handle_params(%{"id" => slug}, _uri, socket) do
+  def handle_params(%{"id" => slug}, _uri, %{assigns: %{user: user}} = socket) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
         {:noreply, socket
@@ -28,17 +29,23 @@ defmodule SnippetWeb.SnippetEditLive do
       snippet ->
         # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
-        {:noreply, assign(socket, snippet: snippet)}
+
+        Presence.track(
+          self(),
+          "snippet:#{snippet.id}",
+          user.id,
+          %{
+            user: user,
+            cursor: %{}
+          }
+        )
+
+        {:noreply, assign(socket, snippet: snippet, users: Presence.list("snippet:#{snippet.id}"))}
     end
   end
 
-  def handle_event("move_cursor", cursor, socket) do
-    # TODO: Assign color here
-    SnippetWeb.Endpoint.broadcast!(
-      "snippet:#{socket.assigns.snippet.id}",
-      "update_cursor",
-      %{body: [cursor | socket.assigns.cursors]}
-    )
+  def handle_event("move_cursor", cursor, %{assigns: %{snippet: snippet, user: user}} = socket) do
+    Presence.update(self(), "snippet:#{snippet.id}", user.id, %{cursor: cursor})
     {:noreply, socket}
   end
 
@@ -77,8 +84,13 @@ defmodule SnippetWeb.SnippetEditLive do
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
 
-  def handle_info(%{event: "update_cursor", payload: %{body: cursors}}, socket) do
-    {:noreply, socket |> assign(cursors: cursors)}
+  def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
+    IO.inspect(Presence.list("snippet:#{snippet.id}"))
+
+    {:noreply,
+     assign(socket,
+       users: Presence.list("snippet:#{snippet.id}")
+     )}
   end
 
   def handle_info(%{event: "update_name", payload: new_snippet}, socket) do

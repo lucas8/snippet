@@ -11,7 +11,8 @@ defmodule Snippet.Application do
       # Start the Ecto repository
       Snippet.Repo,
       # Start the endpoint when the application starts
-      SnippetWeb.Endpoint
+      SnippetWeb.Endpoint,
+      SnippetWeb.Presence
       # Starts a worker by calling: Snippet.Worker.start_link(arg)
       # {Snippet.Worker, arg},
     ]
