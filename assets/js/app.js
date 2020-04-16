@@ -2,13 +2,6 @@
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import css from '../css/app.css'
-
-// webpack automatically bundles all modules in your
-// entry points. Those entry points can be configured
-// in "webpack.config.js".
-//
-// Import dependencies
-//
 import 'phoenix_html'
 import {Socket} from 'phoenix'
 import {LiveSocket} from 'phoenix_live_view'
@@ -40,19 +33,18 @@ Hooks.SnippetTransport = {
       }
     })
 
-    // TODO: This also executes when the cursor is set using setCursor
-    // TODO: This creates an infinite loop because the the server is setting the
-    // data-cursors field which sets the cursor again
-    // this.cm.doc.on('cursorActivity', (doc) => {
-    //   console.log(doc.getCursor())
-    //   this.pushEvent('cursor_move', doc.getCursor())
-    // })
+    this.cm.on('mousedown', (cm) => {
+      this.pushEvent('move_cursor', cm.doc.getCursor())
+    })
+    this.cm.on('keydown', (cm) => {
+      this.pushEvent('move_cursor', cm.doc.getCursor())
+    })
   },
   updated() {
     console.log('Transport Updated')
     let prevCursor = this.cm.getCursor()
     this.cm.doc.setValue(this.el.innerText)
-    this.cm.setCursor(prevCursor)
+    this.cm.setCursor(prevCursor, {origin: 'setSelectionAdjustment'})
   },
 }
 
@@ -61,21 +53,3 @@ let liveSocket = new LiveSocket('/live', Socket, {
   hooks: Hooks,
 })
 liveSocket.connect()
-
-// Import local files
-//
-// Local files can be imported directly using relative paths, for example:
-// import socket from "./socket"
-
-window.copyLink = () => {
-  var dummy = document.createElement('input')
-  var text = window.location.href
-
-  document.body.appendChild(dummy)
-  dummy.value = text
-  dummy.select()
-  document.execCommand('copy')
-  document.body.removeChild(dummy)
-
-  document.querySelector('#copy-link-text').textContent = 'Copied!'
-}

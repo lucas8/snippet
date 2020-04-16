@@ -62,6 +62,7 @@ defmodule SnippetWeb.SnippetIndexLive do
     case Content.create_snippet_no_user(content_params) do
       {:ok, snippet} ->
         {:noreply, socket
+        |> put_flash(:info, "Your snippet has been posted and is public. Login to access additional features.")
         |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetEditLive, snippet.slug))}
 
       {:error, _} ->
