@@ -14,8 +14,9 @@ defmodule SnippetWeb.SnippetEditLive do
     {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false, cursors: [])}
   end
 
-  def mount(_params, _session, socket) do
-    {:ok, socket |> assign(user: nil, signed_in?: false, show_modal: false, cursors: [])}
+  def mount(%{"id" => slug}, _session, socket) do
+    {:ok, socket
+    |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetShowLive, slug))}
   end
 
   def handle_params(%{"id" => slug}, _uri, %{assigns: %{user: user}} = socket) do
@@ -27,7 +28,6 @@ defmodule SnippetWeb.SnippetEditLive do
       }
 
       snippet ->
-        # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
 
         Presence.track(
@@ -85,11 +85,23 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
-    IO.inspect(Presence.list("snippet:#{snippet.id}"))
+    cursors = Presence.list("snippet:#{snippet.id}")
+    |> Enum.map(fn {_user_id, data} ->
+      data[:metas]
+      |> List.first()
+      |> Map.fetch(:cursor)
+    end)
+    |> Enum.map(fn {_, data} ->
+      data
+    end)
+
+    # TODO: Filter out self from list
+
 
     {:noreply,
      assign(socket,
-       users: Presence.list("snippet:#{snippet.id}")
+       users: Presence.list("snippet:#{snippet.id}"),
+       cursors: cursors
      )}
   end
 

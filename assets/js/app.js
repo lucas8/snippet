@@ -44,7 +44,7 @@ Hooks.SnippetTransport = {
     console.log('Transport Updated')
     let prevCursor = this.cm.getCursor()
     this.cm.doc.setValue(this.el.innerText)
-    this.cm.setCursor(prevCursor, {origin: 'setSelectionAdjustment'})
+    this.cm.setCursor(prevCursor)
   },
 }
 
