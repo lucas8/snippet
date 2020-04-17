@@ -37,7 +37,7 @@ defmodule SnippetWeb.SnippetEditLive do
           user
         )
 
-        {:noreply, assign(socket, snippet: snippet, users: Presence.list("snippet:#{snippet.id}"))}
+        {:noreply, assign(socket, snippet: snippet, users: [])}
     end
   end
 
@@ -85,15 +85,12 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
     users = Presence.list("snippet:#{snippet.id}")
-    |> Enum.map(fn {_user_id, data} ->
+    |> Enum.map(fn {_user_map, data} ->
       data[:metas]
       |> List.first()
     end)
 
-    {:noreply,
-     assign(socket,
-       users: users
-     )}
+    {:noreply, assign(socket, users: users)}
   end
 
   def handle_info(%{event: "update_name", payload: new_snippet}, socket) do
