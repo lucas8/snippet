@@ -39,6 +39,7 @@ Hooks.SnippetTransport = {
 
     this.cm.on('change', (editor, {origin}) => {
       if (origin !== 'setValue') {
+        console.log('event')
         // TODO: Debounce input
         this.pushEvent('change_value', editor.getValue())
       }

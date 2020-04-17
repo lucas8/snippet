@@ -14,9 +14,9 @@ defmodule SnippetWeb.SnippetEditLive do
     {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false, users: [])}
   end
 
-  def mount(%{"id" => slug}, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket
-    |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetShowLive, slug))}
+    |> redirect(to: Routes.session_path(socket, :request, "github"))}
   end
 
   def handle_params(%{"id" => slug}, _uri, %{assigns: %{user: user}} = socket) do
