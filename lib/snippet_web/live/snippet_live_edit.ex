@@ -34,23 +34,27 @@ defmodule SnippetWeb.SnippetEditLive do
           self(),
           "snippet:#{snippet.id}",
           user.id,
-          %{
-            user: user,
-            typing: false
-          }
+          user
         )
 
         {:noreply, assign(socket, snippet: snippet, users: Presence.list("snippet:#{snippet.id}"))}
     end
   end
 
-  def handle_event("change_value", value, socket) do
-    SnippetWeb.Endpoint.broadcast!(
-      "snippet:#{socket.assigns.snippet.id}",
-      "updated_snippet",
-      %{socket.assigns.snippet | body: value}
-    )
-    {:noreply, socket}
+  def handle_event("change_value", value, %{assigns: %{snippet: snippet}} = socket) do
+    case Content.update_snippet(snippet, %{body: value}) do
+      {:ok, snippet} ->
+        SnippetWeb.Endpoint.broadcast!(
+          "snippet:#{socket.assigns.snippet.id}",
+          "updated_snippet",
+          %{socket.assigns.snippet | body: value}
+        )
+        {:noreply, socket
+        |> assign(snippet: snippet)}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event("name-blur", %{"value" => value}, socket) do

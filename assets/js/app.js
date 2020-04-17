@@ -38,9 +38,8 @@ Hooks.SnippetTransport = {
     })
 
     this.cm.on('change', (editor, {origin}) => {
-      // Make sure the input value is coming from the user input
       if (origin !== 'setValue') {
-        debounce(() => console.log(editor.getValue()), 250)
+        // TODO: Debounce input
         this.pushEvent('change_value', editor.getValue())
       }
     })
