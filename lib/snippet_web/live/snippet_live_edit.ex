@@ -11,7 +11,7 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def mount(_params, %{"user_id" => user_id}, socket) do
     user = Accounts.get_user!(user_id)
-    {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false, cursors: [])}
+    {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false, users: [])}
   end
 
   def mount(%{"id" => slug}, _session, socket) do
@@ -36,17 +36,12 @@ defmodule SnippetWeb.SnippetEditLive do
           user.id,
           %{
             user: user,
-            cursor: %{}
+            typing: false
           }
         )
 
         {:noreply, assign(socket, snippet: snippet, users: Presence.list("snippet:#{snippet.id}"))}
     end
-  end
-
-  def handle_event("move_cursor", cursor, %{assigns: %{snippet: snippet, user: user}} = socket) do
-    Presence.update(self(), "snippet:#{snippet.id}", user.id, %{cursor: cursor})
-    {:noreply, socket}
   end
 
   def handle_event("change_value", value, socket) do
@@ -85,23 +80,15 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
-    cursors = Presence.list("snippet:#{snippet.id}")
+    users = Presence.list("snippet:#{snippet.id}")
     |> Enum.map(fn {_user_id, data} ->
       data[:metas]
       |> List.first()
-      |> Map.fetch(:cursor)
     end)
-    |> Enum.map(fn {_, data} ->
-      data
-    end)
-
-    # TODO: Filter out self from list
-
 
     {:noreply,
      assign(socket,
-       users: Presence.list("snippet:#{snippet.id}"),
-       cursors: cursors
+       users: users
      )}
   end
 
