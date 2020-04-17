@@ -1,5 +1,5 @@
 <div class="flex flex-col h-full">
-  <div class="p-8 h-full flex flex-col">
+  <div class="p-4 sm:p-8 h-full flex flex-col">
     <div class="lg:flex lg:items-center lg:justify-between">
       <div class="flex-1 min-w-0">
         <input phx-blur="name-blur" value="<%= @snippet.name %>" class="title-input lg:w-5/12 md:w-full rounded-sm bg-transparent text-2xl font-bold leading-7 text-white sm:text-3xl sm:leading-9 sm:truncate focus:outline-none transition duration-150 ease-in-out"></input>
@@ -41,7 +41,7 @@
             </button>
           </div>
         <div class="sm:ml-3 inline-flex rounded-md shadow lm-2">
-          <button type="button" class="btn-primary w-full sm:w-auto mt-3 sm:mt-0">
+          <button phx-click="publish-button" type="button" class="btn-primary w-full sm:w-auto mt-3 sm:mt-0">
             <svg class="mr-2 opacity-50 fill-current h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"></path></svg>
             Publish
           </button>
@@ -55,6 +55,10 @@
   </div>
 </div>
 
-<%= if @show_modal do %>
+<%= if @show_delete_modal do %>
   <%= live_component(@socket, SnippetWeb.LiveComponent.ModalLive, id: "delete-snippet", title: "Are you sure you want to delete?", body: "This action cannot be undone. Deleting #{~s(")}#{@snippet.name}#{~s(")} is permanent and irreversible.", primary_button: "Delete", primary_button_action: "delete-snippet", secondary_button: "Cancel", secondary_button_action: "cancel-delete")%>
+<% end %>
+
+<%= if @show_publish_modal do %>
+  <%= live_component(@socket, SnippetWeb.LiveComponent.PublishLive, id: "publish-snippet", title: "Publish your snippet", body: "Share your snippet with other github users, the web or no one.", primary_button_action: "publish-snippet", secondary_button_action: "cancel-publish")%>
 <% end %>

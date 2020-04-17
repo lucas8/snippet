@@ -11,7 +11,7 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def mount(_params, %{"user_id" => user_id}, socket) do
     user = Accounts.get_user!(user_id)
-    {:ok, socket |> assign(user: user, signed_in?: true, show_modal: false, users: [])}
+    {:ok, socket |> assign(user: user, signed_in?: true, show_delete_modal: false, show_publish_modal: false, users: [])}
   end
 
   def mount(_params, _session, socket) do
@@ -75,12 +75,16 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_event("delete-button-click", _params, socket) do
-    {:noreply, assign(socket, show_modal: true)}
+    {:noreply, assign(socket, show_delete_modal: true)}
   end
 
   def handle_event("create-snippet", _params, socket) do
     {:noreply, socket
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
+  end
+
+  def handle_event("publish-button", _params, socket) do
+    {:noreply, socket |> assign(show_publish_modal: true)}
   end
 
   def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
@@ -107,8 +111,16 @@ defmodule SnippetWeb.SnippetEditLive do
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
 
+  def handle_info({SnippetWeb.LiveComponent.PublishLive, :button_clicked, %{action: "publish-snippet"}}, socket) do
+    {:noreply, assign(socket, show_publish_modal: false)}
+  end
+
+  def handle_info({SnippetWeb.LiveComponent.PublishLive, :button_clicked, %{action: "cancel-publish"}}, socket) do
+    {:noreply, assign(socket, show_publish_modal: false)}
+  end
+
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-delete"}}, socket) do
-    {:noreply, assign(socket, show_modal: false)}
+    {:noreply, assign(socket, show_delete_modal: false)}
   end
 
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "delete-snippet"}}, socket) do
