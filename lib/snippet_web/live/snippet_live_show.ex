@@ -3,9 +3,15 @@ defmodule SnippetWeb.SnippetShowLive do
 
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
+  alias Snippet.Accounts
+
+  def mount(_params, %{"user_id" => user_id}, socket) do
+    user = Accounts.get_user!(user_id)
+    {:ok, socket |> assign(user: user, signed_in?: true)}
+  end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket |> assign(user: nil, signed_in?: false)}
   end
 
   def handle_params(%{"id" => slug}, _uri, socket) do

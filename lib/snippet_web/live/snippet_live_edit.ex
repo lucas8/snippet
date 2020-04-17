@@ -3,15 +3,23 @@ defmodule SnippetWeb.SnippetEditLive do
 
   alias SnippetWeb.Router.Helpers, as: Routes
   alias Snippet.Content
+  alias Snippet.Accounts
+  alias SnippetWeb.Presence
 
   # TODO: Add websocket event for deleting snippets
   # TODO: Debounce update to db after typing is finished
 
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, show_modal: false)}
+  def mount(_params, %{"user_id" => user_id}, socket) do
+    user = Accounts.get_user!(user_id)
+    {:ok, socket |> assign(user: user, signed_in?: true, show_delete_modal: false, show_publish_modal: false, users: [])}
   end
 
-  def handle_params(%{"id" => slug}, _uri, socket) do
+  def mount(_params, _session, socket) do
+    {:ok, socket
+    |> redirect(to: Routes.session_path(socket, :request, "github"))}
+  end
+
+  def handle_params(%{"id" => slug}, _uri, %{assigns: %{user: user}} = socket) do
     case Content.get_snippet_by_slug(slug) do
       nil ->
         {:noreply, socket
@@ -20,24 +28,44 @@ defmodule SnippetWeb.SnippetEditLive do
       }
 
       snippet ->
-        # Subscribe to snippet:id pubsub
         SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
-        {:noreply, assign(socket, snippet: snippet)}
+
+        Presence.track(
+          self(),
+          "snippet:#{snippet.id}",
+          user.id,
+          user
+        )
+
+        {:noreply, assign(socket, snippet: snippet, users: [])}
     end
   end
 
-  def handle_event("change_value", value, socket) do
-    SnippetWeb.Endpoint.broadcast!(
-      "snippet:#{socket.assigns.snippet.id}",
-      "updated_snippet",
-      %{socket.assigns.snippet | body: value}
-    )
-    {:noreply, socket}
+  def handle_event("change_value", value, %{assigns: %{snippet: snippet}} = socket) do
+    case Content.update_snippet(snippet, %{body: value}) do
+      {:ok, snippet} ->
+        SnippetWeb.Endpoint.broadcast!(
+          "snippet:#{socket.assigns.snippet.id}",
+          "updated_snippet",
+          %{socket.assigns.snippet | body: value}
+        )
+        {:noreply, socket
+        |> assign(snippet: snippet)}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
   end
 
   def handle_event("name-blur", %{"value" => value}, socket) do
     case Content.update_snippet(socket.assigns.snippet, %{name: value}) do
       {:ok, snippet} ->
+        # Send out event
+        SnippetWeb.Endpoint.broadcast!(
+          "snippet:#{snippet.id}",
+          "update_name",
+          %{socket.assigns.snippet | name: snippet.name}
+        )
         {:noreply, socket
         |> assign(snippet: snippet)}
 
@@ -47,12 +75,30 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_event("delete-button-click", _params, socket) do
-    {:noreply, assign(socket, show_modal: true)}
+    {:noreply, assign(socket, show_delete_modal: true)}
   end
 
   def handle_event("create-snippet", _params, socket) do
     {:noreply, socket
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
+  end
+
+  def handle_event("publish-button", _params, socket) do
+    {:noreply, socket |> assign(show_publish_modal: true)}
+  end
+
+  def handle_info(%{event: "presence_diff"}, socket = %{assigns: %{snippet: snippet}}) do
+    users = Presence.list("snippet:#{snippet.id}")
+    |> Enum.map(fn {_user_map, data} ->
+      data[:metas]
+      |> List.first()
+    end)
+
+    {:noreply, assign(socket, users: users)}
+  end
+
+  def handle_info(%{event: "update_name", payload: new_snippet}, socket) do
+    {:noreply, socket |> assign(snippet: new_snippet)}
   end
 
   def handle_info(%{event: "updated_snippet", payload: new_snippet}, socket) do
@@ -65,8 +111,16 @@ defmodule SnippetWeb.SnippetEditLive do
       |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetIndexLive))}
   end
 
+  def handle_info({SnippetWeb.LiveComponent.PublishLive, :button_clicked, %{action: "publish-snippet"}}, socket) do
+    {:noreply, assign(socket, show_publish_modal: false)}
+  end
+
+  def handle_info({SnippetWeb.LiveComponent.PublishLive, :button_clicked, %{action: "cancel-publish"}}, socket) do
+    {:noreply, assign(socket, show_publish_modal: false)}
+  end
+
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "cancel-delete"}}, socket) do
-    {:noreply, assign(socket, show_modal: false)}
+    {:noreply, assign(socket, show_delete_modal: false)}
   end
 
   def handle_info({SnippetWeb.LiveComponent.ModalLive, :button_clicked, %{action: "delete-snippet"}}, socket) do

@@ -1,10 +1,10 @@
-defmodule SnippetWeb.LiveComponent.ModalLive do
+defmodule SnippetWeb.LiveComponent.PublishLive do
   use Phoenix.LiveComponent
 
   @defaults %{
     secondary_button: "Cancel",
     secondary_button_action: nil,
-    primary_button: "OK",
+    primary_button: "Submit",
     primary_button_action: nil,
   }
 

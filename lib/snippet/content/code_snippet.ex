@@ -9,6 +9,8 @@ defmodule Snippet.Content.CodeSnippet do
     field :slug, :string
     field :password, :string
 
+    belongs_to :user, Snippet.Accounts.User
+
     timestamps()
   end
 

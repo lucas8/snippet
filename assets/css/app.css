@@ -30,6 +30,10 @@ body {
   @apply opacity-50;
 }
 
+.navbar-item:focus {
+  outline: none;
+}
+
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.75);
 }
@@ -40,4 +44,17 @@ textarea::placeholder {
 
 div[data-phx-view] {
   @apply w-full h-full;
+}
+
+.dropdown-item {
+  @apply block px-4 py-2 text-sm leading-5 text-white transition duration-150 ease-in-out;
+  outline: none;
+  text-decoration: none;
+}
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.publish-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
