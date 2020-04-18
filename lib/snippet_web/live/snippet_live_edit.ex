@@ -41,6 +41,11 @@ defmodule SnippetWeb.SnippetEditLive do
     end
   end
 
+  def handle_event("suggest", %{"q" => q}, socket) when byte_size(q) <= 100 do
+    IO.inspect(Accounts.find_like_user(q))
+    {:noreply, socket}
+  end
+
   def handle_event("change_value", value, %{assigns: %{snippet: snippet}} = socket) do
     case Content.update_snippet(snippet, %{body: value}) do
       {:ok, snippet} ->

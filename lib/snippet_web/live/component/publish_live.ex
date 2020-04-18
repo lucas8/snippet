@@ -1,11 +1,18 @@
 defmodule SnippetWeb.LiveComponent.PublishLive do
   use Phoenix.LiveComponent
 
+  alias Snippet.Accounts
+
   @defaults %{
     secondary_button: "Cancel",
     secondary_button_action: nil,
     primary_button: "Submit",
     primary_button_action: nil,
+
+    # Modal Specific defaults
+    query: nil,
+    loading: false,
+    matches: []
   }
 
   def module(socket) do

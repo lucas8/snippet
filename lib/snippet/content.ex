@@ -23,6 +23,12 @@ defmodule Snippet.Content do
     snippet |> Repo.delete()
   end
 
-  @spec get_snippet_by_slug(any) :: any
   def get_snippet_by_slug(slug), do: Repo.get_by(CodeSnippet, slug: slug)
+
+
+  def create_invite(snippet, user) do
+    snippet
+    |> Ecto.build_assoc(:invites, user_id: user.id)
+    |> Repo.insert()
+  end
 end
