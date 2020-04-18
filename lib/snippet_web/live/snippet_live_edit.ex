@@ -11,7 +11,7 @@ defmodule SnippetWeb.SnippetEditLive do
 
   def mount(_params, %{"user_id" => user_id}, socket) do
     user = Accounts.get_user!(user_id)
-    {:ok, socket |> assign(user: user, signed_in?: true, show_delete_modal: false, show_publish_modal: false, users: [])}
+    {:ok, socket |> assign(user: user, signed_in?: true, show_delete_modal: false, show_publish_modal: false, users: [], query: nil, matches: [])}
   end
 
   def mount(_params, _session, socket) do
@@ -42,8 +42,9 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_event("suggest", %{"q" => q}, socket) when byte_size(q) <= 100 do
-    IO.inspect(Accounts.find_like_user(q))
-    {:noreply, socket}
+    results = Accounts.find_like_user(q)
+    IO.inspect(results)
+    {:noreply, socket |> assign(matches: results)}
   end
 
   def handle_event("change_value", value, %{assigns: %{snippet: snippet}} = socket) do

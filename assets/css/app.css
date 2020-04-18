@@ -58,3 +58,6 @@ div[data-phx-view] {
 .publish-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
+.match-item:hover {
+  background: #ffffff20;
+}
