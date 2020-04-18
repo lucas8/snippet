@@ -61,3 +61,7 @@ div[data-phx-view] {
 .match-item:hover {
   background: #ffffff20;
 }
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}

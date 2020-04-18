@@ -81,15 +81,12 @@
             </p>
             <div class="mt-2 relative">
               <form phx-change="suggest" phx-submit="search">
-                <input value="<%= @query %>" aria-label="Add a user" name="q" type="text" style="background: rgba(255, 255, 255, 0.1)" class="mr-2 publish-input appearance-none relative block w-full font-medium px-3 py-2 placeholder-white text-white focus:outline-none focus:z-10 sm:text-sm sm:leading-5 <%= if length(@matches) > 0, do: ~s(rounded-t), else: ~s(rounded) %>" placeholder="Enter a username"/>
-                <div class="absolute w-full z-30 shadow-2xl rounded-b overflow-hidden" style="background: #2C2C30">
+                <input list="matches" value="<%= @query %>" aria-label="Add a user" name="q" type="text" style="background: rgba(255, 255, 255, 0.1)" class="mr-2 publish-input appearance-none relative block w-full font-medium px-3 py-2 placeholder-white text-white focus:outline-none focus:z-10 sm:text-sm sm:leading-5 rounded" placeholder="Enter a username"/>
+                <datalist id="matches" class="mt-1 absolute w-full z-30 shadow-2xl rounded-b overflow-hidden" style="background: #2C2C30">
                   <%= for match <- @matches do %>
-                    <div class="match-item cursor-pointer flex items-center align-center p-2 text-white font-medium text-md transition duration-150 ease-in-out">
-                      <img class="w-4 h-4 rounded mr-2" src="<%= match.profile_url %>" />
-                      <%= match.username %>
-                    </div>
+                    <option value="<%= match.username %>" class="match-item cursor-pointer flex items-center align-center p-2 text-white font-medium text-md transition duration-150 ease-in-out"><%= match.username %></option>
                   <% end %>
-                </div>
+                </datalist>
               </form>
             </div>
             <div class="block mt-3 min-w-full shadow overflow-scroll rounded-md" style="max-height:200px">
