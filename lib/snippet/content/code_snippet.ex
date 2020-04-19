@@ -7,7 +7,7 @@ defmodule Snippet.Content.CodeSnippet do
     field :body, :string
     field :name, :string
     field :slug, :string
-    field :password, :string
+    field :public, :boolean
 
     belongs_to :user, Snippet.Accounts.User
     has_many :invites, Snippet.Content.Invite
@@ -18,7 +18,7 @@ defmodule Snippet.Content.CodeSnippet do
   @doc false
   def changeset(code_snippet, attrs) do
     code_snippet
-    |> cast(attrs, [:name, :author, :slug, :body])
+    |> cast(attrs, [:name, :author, :slug, :body, :public])
     |> validate_required([:name, :author, :slug])
     |> unique_constraint(:slug)
     |> validate_length(:name, max: 30)
