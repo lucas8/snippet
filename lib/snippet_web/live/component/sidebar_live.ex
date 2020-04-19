@@ -27,7 +27,7 @@ defmodule SnippetWeb.LiveComponent.SidebarLive do
         </a>
         <%= if @signed_in? do %>
           <button phx-click="profile-toggle" phx-target="#sidebar-<%= @id %>" class="navbar-item focus:outine-none" style="margin-top: auto !important;">
-            <img class="rounded-full" src="<%= @user.profile_url %>" />
+            <img draggable="false" class="rounded-full" src="<%= @user.profile_url %>" />
           </button>
         <% else %>
           <a href="/auth/github" class="navbar-item" style="margin-top: auto !important;">

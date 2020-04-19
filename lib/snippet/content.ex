@@ -1,6 +1,9 @@
 defmodule Snippet.Content do
   alias Snippet.Repo
   alias Snippet.Content.CodeSnippet
+  alias Snippet.Content.Invite
+
+  import Ecto.Query
 
   def create_snippet(user, params \\ %{}) do
     user
@@ -25,10 +28,20 @@ defmodule Snippet.Content do
 
   def get_snippet_by_slug(slug), do: Repo.get_by(CodeSnippet, slug: slug)
 
-
-  def create_invite(snippet, user) do
+  def create_invite(snippet, user, status) do
     snippet
     |> Ecto.build_assoc(:invites, user_id: user.id)
+    |> Invite.changeset(%{status: status})
     |> Repo.insert()
+  end
+
+  def get_invites(snippet_id) do
+    Repo.all(
+      from inv in Invite,
+        join: user in assoc(inv, :user),
+        where: inv.code_snippet_id == ^snippet_id,
+        order_by: [desc: inv.inserted_at],
+        select: %{status: inv.status, user: %{username: user.username, id: user.id}}
+    )
   end
 end

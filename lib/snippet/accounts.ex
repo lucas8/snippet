@@ -16,6 +16,8 @@ defmodule Snippet.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_username!(username), do: Repo.get_by!(User, username: username)
+
   def sign_out(conn) do
     Plug.Conn.configure_session(conn, drop: true)
   end

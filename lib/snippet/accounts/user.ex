@@ -10,6 +10,7 @@ defmodule Snippet.Accounts.User do
     field :profile_url, :string
 
     has_many :code_snippets, Snippet.Content.CodeSnippet
+    has_many :invites, Snippet.Content.Invite
 
     timestamps()
   end

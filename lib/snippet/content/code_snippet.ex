@@ -10,6 +10,7 @@ defmodule Snippet.Content.CodeSnippet do
     field :password, :string
 
     belongs_to :user, Snippet.Accounts.User
+    has_many :invites, Snippet.Content.Invite
 
     timestamps()
   end

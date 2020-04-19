@@ -80,7 +80,7 @@
               Share your snippet with other github users, the web or no one.
             </p>
             <div class="mt-2 relative">
-              <form phx-change="suggest" phx-submit="search">
+              <form phx-change="suggest" phx-submit="add-user">
                 <input list="matches" value="<%= @query %>" aria-label="Add a user" name="q" type="text" style="background: rgba(255, 255, 255, 0.1)" class="mr-2 publish-input appearance-none relative block w-full font-medium px-3 py-2 placeholder-white text-white focus:outline-none focus:z-10 sm:text-sm sm:leading-5 rounded" placeholder="Enter a username"/>
                 <datalist id="matches" class="mt-1 absolute w-full z-30 shadow-2xl rounded-b overflow-hidden" style="background: #2C2C30">
                   <%= for match <- @matches do %>
@@ -99,15 +99,17 @@
                   </tr>
                 </thead>
                 <tbody style="background: #111113;">
-                  <tr>
-                    <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)">lucas8</td>
-                    <td class="font-mono px-4 py-2 text-white border-t opacity-25 text-left" style="border-color:rgba(255, 255, 255, 0.1)">Pending</td>
-                    <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)">
-                      <a class="hover:underline font-mono text-sm font-semibold text-red-500 cursor-pointer hover:text-red-400 transition duration-150 ease-in-out">
-                        Remove
-                      </a>
-                    </td>
-                  </tr>
+                  <%= for invite <- @invites do %>
+                    <tr>
+                      <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)"><%= invite.user.username %></td>
+                      <td class="font-mono px-4 py-2 text-white border-t opacity-25 text-left" style="border-color:rgba(255, 255, 255, 0.1)"><%= invite.status %></td>
+                      <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)">
+                        <a class="hover:underline font-mono text-sm font-semibold text-red-500 cursor-pointer hover:text-red-400 transition duration-150 ease-in-out">
+                          Remove
+                        </a>
+                      </td>
+                    </tr>
+                  <% end %>
                 </tbody>
               </table>
             </div>
