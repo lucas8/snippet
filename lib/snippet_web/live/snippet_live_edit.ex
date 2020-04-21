@@ -63,8 +63,6 @@ defmodule SnippetWeb.SnippetEditLive do
         inv.id !== invite.id
       end)
 
-      IO.inspect(new_invites)
-
       {:noreply, assign(socket, invites: new_invites)}
     else
       {:noreply, socket |> put_flash(:error, "You don't have permission to do that!")}
@@ -77,13 +75,21 @@ defmodule SnippetWeb.SnippetEditLive do
         {:noreply, socket}
       
       user ->
-        with {:ok, invite} <- Content.create_invite(snippet, user, "Pending"),
-            invite <- Repo.preload(invite, :user) do
-              {:noreply, assign(socket, invites: [%{id: invite.id, status: invite.status, user: %{username: invite.user.username}} | invites])}
-            else
-              _error ->
-                {:noreply, socket}
-              end
+        check_user_exists = Enum.filter(invites, fn inv ->
+          inv.user.id == user.id
+        end) |> length()
+
+        if (check_user_exists == 0) do
+          with {:ok, invite} <- Content.create_invite(snippet, user, "Pending"),
+              invite <- Repo.preload(invite, :user) do
+                {:noreply, assign(socket, invites: [%{id: invite.id, status: invite.status, user: %{id: invite.user.id, username: invite.user.username}} | invites])}
+              else
+                _error ->
+                  {:noreply, socket}
+                end
+        else
+          {:noreply, socket}
+        end
     end
   end
 
