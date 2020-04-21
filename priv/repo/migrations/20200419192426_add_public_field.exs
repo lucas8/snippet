@@ -3,7 +3,7 @@ defmodule Snippet.Repo.Migrations.AddPublicField do
 
   def change do
     alter table(:code_snippets) do
-      add :public, :boolean, default: true
+      add :public, :boolean, default: false
     end
   end
 end

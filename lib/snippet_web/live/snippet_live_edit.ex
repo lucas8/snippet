@@ -30,8 +30,8 @@ defmodule SnippetWeb.SnippetEditLive do
         invites = Content.get_invites(snippet.id)
         user_id_list = Enum.map(invites, fn inv -> inv.user.id end)
 
-        if(Enum.member?(user_id_list, user.id) || snippet.user_id == user.id) do
-          if snippet.user_id !== user.id do
+        if(Enum.member?(user_id_list, user.id) || snippet.user_id == user.id || snippet.public == true) do
+          if (snippet.user_id !== user.id && snippet.public !== true) do
             current_snippet = Repo.get_by(Invite, user_id: user.id, code_snippet_id: snippet.id)
             if current_snippet.status !== "Accepted" do
               current_snippet
@@ -39,7 +39,7 @@ defmodule SnippetWeb.SnippetEditLive do
               |> Repo.update()
             end
           end
-          
+
           # TODO: Allow "public" rooms
           SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
 
@@ -78,17 +78,17 @@ defmodule SnippetWeb.SnippetEditLive do
     end
   end
 
-  def handle_event("add-user", %{"q" => query}, %{assigns: %{snippet: snippet, invites: invites}} = socket) do
+  def handle_event("add-user", %{"q" => query}, %{assigns: %{snippet: snippet, invites: invites, user: current_user}} = socket) do
     case Accounts.get_user_by_username(query) do
-      nil -> 
+      nil ->
         {:noreply, socket}
-      
+
       user ->
         check_user_exists = Enum.filter(invites, fn inv ->
           inv.user.id == user.id
         end) |> length()
 
-        if (check_user_exists == 0) do
+        if (check_user_exists == 0 && user.id !== current_user.id) do
           with {:ok, invite} <- Content.create_invite(snippet, user, "Pending"),
               invite <- Repo.preload(invite, :user) do
                 {:noreply, assign(socket, invites: [%{id: invite.id, status: invite.status, user: %{id: invite.user.id, username: invite.user.username}} | invites])}
@@ -99,6 +99,26 @@ defmodule SnippetWeb.SnippetEditLive do
         else
           {:noreply, socket}
         end
+    end
+  end
+
+  def handle_event("make-public", _params, %{assigns: %{snippet: snippet}} = socket) do
+    case Content.update_snippet(snippet, %{public: true}) do
+      {:ok, snippet} ->
+        {:noreply, assign(socket, snippet: snippet)}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
+  end
+
+  def handle_event("make-private", _params, %{assigns: %{snippet: snippet}} = socket) do
+    case Content.update_snippet(snippet, %{public: false}) do
+      {:ok, snippet} ->
+        {:noreply, assign(socket, snippet: snippet)}
+
+      {:error, _} ->
+        {:noreply, socket}
     end
   end
 

@@ -6,6 +6,11 @@ CodeMirror template by Jan T. Sott (https://github.com/idleberg), adapted by Bra
 
 .CodeMirror {
   z-index: 0;
+  max-height: 100%;
+}
+
+.CodeMirror-scroll {
+  padding-bottom: 0px !important;
 }
 
 .cm-s-duotone-dark.CodeMirror {

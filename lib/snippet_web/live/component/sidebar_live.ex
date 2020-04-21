@@ -19,9 +19,6 @@ defmodule SnippetWeb.LiveComponent.SidebarLive do
         <%= live_patch to: Routes.live_path(@socket, SnippetWeb.SnippetIndexLive), class: "navbar-item" do %>
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
         <% end %>
-        <a href="#" class="navbar-item">
-          <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
-        </a>
         <a href="https://lucasstettner.com" class="navbar-item">
           <svg class="fill-current h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8"><path fill-rule="evenodd" d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z" clip-rule="evenodd"></path></svg>
         </a>
