@@ -50,21 +50,39 @@ defmodule SnippetWeb.SnippetEditLive do
     end
   end
 
-  def handle_event("add-user", %{"q" => q}, %{assigns: %{snippet: snippet, invites: invites}} = socket) do
-    user_to_invite = Accounts.get_user_by_username!(q)
+  def handle_event("invite-remove", %{"value" => value}, %{assigns: %{user: user, invites: invites}} = socket) do
+    invite = Content.get_invite!(value)
+    invite = Repo.preload(invite, :code_snippet)
 
-    case Content.create_invite(snippet, user_to_invite, "Pending") do
-      {:ok, invite} ->
-        invite = Repo.preload(invite, :user)
-        new_invite = %{status: invite.status, user: %{username: invite.user.username}}
+    # Here we want to check if the owner can delete this invite
+    if(invite.code_snippet.user_id == user.id) do
+      invite_to_delete = Content.get_invite!(value)
+      {:ok, invite} = Content.remove_invite(invite_to_delete)
 
-        {:noreply, assign(socket, invites: [new_invite | invites])}
+      invite = Repo.preload(invite, :user)
+      deleted_invite = %{id: invite.id, status: invite.status, user: %{username: invite.user.username}}
 
-      {:error, _reason} ->
-          {:noreply, socket
-            |> put_flash(:error, "An error occured trying to invite that user")
-            |> push_redirect(to: Routes.live_path(socket, SnippetWeb.SnippetShowLive, snippet.slug))}
+      IO.inspect(deleted_invite)
 
+      {:noreply, assign(socket, invites: List.delete(invites, deleted_invite))}
+    else
+      {:noreply, socket |> put_flash(:error, "You don't have permission to do that!")}
+    end
+  end
+
+  def handle_event("add-user", %{"q" => query}, %{assigns: %{snippet: snippet, invites: invites}} = socket) do
+    case Accounts.get_user_by_username(query) do
+      nil -> 
+        {:noreply, socket}
+      
+      user ->
+        with {:ok, invite} <- Content.create_invite(snippet, user, "Pending"),
+            invite <- Repo.preload(invite, :user) do
+              {:noreply, assign(socket, invites: [%{id: invite.id, status: invite.status, user: %{username: invite.user.username}} | invites])}
+            else
+              _error ->
+                {:noreply, socket}
+              end
     end
   end
 
@@ -120,6 +138,10 @@ defmodule SnippetWeb.SnippetEditLive do
   end
 
   def handle_event("publish-cancel", _parmas, socket) do
+    {:noreply, assign(socket, show_publish_modal: false)}
+  end
+
+  def handle_event("snippet-publish", _parmas, socket) do
     {:noreply, assign(socket, show_publish_modal: false)}
   end
 

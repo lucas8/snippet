@@ -41,7 +41,11 @@ defmodule Snippet.Content do
         join: user in assoc(inv, :user),
         where: inv.code_snippet_id == ^snippet_id,
         order_by: [desc: inv.inserted_at],
-        select: %{status: inv.status, user: %{username: user.username, id: user.id}}
+        select: %{id: inv.id, status: inv.status, user: %{username: user.username, id: user.id}}
     )
   end
+
+  def get_invite!(id), do: Repo.get!(Invite, id)
+  
+  def remove_invite(%Invite{} = invite), do: invite |> Repo.delete()
 end
