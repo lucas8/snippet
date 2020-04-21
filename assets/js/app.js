@@ -11,20 +11,6 @@ let csrfToken = document
   .getAttribute('content')
 
 let Hooks = {}
-Hooks.ShowSnippetTransport = {
-  mounted() {
-    this.cm = CodeMirror(document.getElementById('textarea'), {
-      lineNumbers: true,
-      mode: 'javascript',
-      theme: 'duotone-dark',
-      autoFocus: true,
-      foldGutter: true,
-      autofocus: true,
-      value: this.el.innerText,
-      readOnly: true,
-    })
-  },
-}
 Hooks.SnippetTransport = {
   mounted() {
     this.cm = CodeMirror(document.getElementById('textarea'), {

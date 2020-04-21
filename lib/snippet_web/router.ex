@@ -19,8 +19,7 @@ defmodule SnippetWeb.Router do
     pipe_through :browser
 
     live "/", SnippetIndexLive
-    live "/:id/edit", SnippetEditLive
-    live "/:id", SnippetShowLive
+    live "/:id", SnippetEditLive
   end
 
   scope "/auth", SnippetWeb do

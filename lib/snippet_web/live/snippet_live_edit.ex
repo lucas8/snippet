@@ -31,14 +31,15 @@ defmodule SnippetWeb.SnippetEditLive do
         user_id_list = Enum.map(invites, fn inv -> inv.user.id end)
 
         if(Enum.member?(user_id_list, user.id) || snippet.user_id == user.id) do
-          current_snippet = Repo.get_by(Invite, user_id: user.id, code_snippet_id: snippet.id)
-          if current_snippet.status !== "Accepted" do
-            current_snippet
-            |> Invite.changeset(%{status: "Accepted"})
-            |> Repo.update()
+          if snippet.user_id !== user.id do
+            current_snippet = Repo.get_by(Invite, user_id: user.id, code_snippet_id: snippet.id)
+            if current_snippet.status !== "Accepted" do
+              current_snippet
+              |> Invite.changeset(%{status: "Accepted"})
+              |> Repo.update()
+            end
           end
           
-          # TODO: Mark pending as "Accepted" -> do the same in view
           # TODO: Allow "public" rooms
           SnippetWeb.Endpoint.subscribe("snippet:#{snippet.id}")
 
