@@ -59,12 +59,13 @@ defmodule SnippetWeb.SnippetEditLive do
       invite_to_delete = Content.get_invite!(value)
       {:ok, invite} = Content.remove_invite(invite_to_delete)
 
-      invite = Repo.preload(invite, :user)
-      deleted_invite = %{id: invite.id, status: invite.status, user: %{username: invite.user.username}}
+      new_invites = Enum.filter(invites, fn inv ->
+        inv.id !== invite.id
+      end)
 
-      IO.inspect(deleted_invite)
+      IO.inspect(new_invites)
 
-      {:noreply, assign(socket, invites: List.delete(invites, deleted_invite))}
+      {:noreply, assign(socket, invites: new_invites)}
     else
       {:noreply, socket |> put_flash(:error, "You don't have permission to do that!")}
     end
