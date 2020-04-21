@@ -103,7 +103,7 @@
                   <%= for invite <- @invites do %>
                     <tr>
                       <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)"><%= invite.user.username %></td>
-                      <td class="font-mono px-4 py-2 text-white border-t opacity-25 text-left" style="border-color:rgba(255, 255, 255, 0.1)"><%= invite.status %></td>
+                      <td class="font-mono px-4 py-2 text-white border-t text-left <%= if invite.status == "Accepted", do: "text-indigo-500", else: "text-white opacity-25" %>" style="border-color:rgba(255, 255, 255, 0.1)"><%= invite.status %></td>
                       <td class="font-mono px-4 py-2 text-white border-t text-left" style="border-color:rgba(255, 255, 255, 0.1)">
                         <button phx-click="invite-remove" value="<%= invite.id %>" class="hover:underline font-mono text-sm font-semibold text-red-500 cursor-pointer hover:text-red-400 transition duration-150 ease-in-out focus:outline-none">
                           Remove
